@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
         // 게임 시작 버튼 ==> 게임 화면으로 이동
         startButton = findViewById(R.id.startButton)
         startButton.setOnClickListener {
-            println("game start")
+            startActivity(Intent(this, DifficultyActivity::class.java))
         }
 
         // 게임 방법 버튼 ==> 게임 방법 화면으로 이동

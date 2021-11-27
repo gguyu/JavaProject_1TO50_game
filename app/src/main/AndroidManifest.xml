@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.JavaProject">
         <activity
+            android:name=".DifficultyActivity"
+            android:exported="false" />
+        <activity
             android:name=".TipActivity"
             android:exported="false" />
         <activity
