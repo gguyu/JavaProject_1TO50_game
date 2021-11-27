@@ -1,5 +1,6 @@
 package com.example.javaproject
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -18,6 +19,7 @@ class DifficultyActivity : AppCompatActivity() {
         easyButton = findViewById(R.id.easyButton)
         easyButton.setOnClickListener {
             println("쉬움 모드, 난이도를 인자로 넘겨주기")
+            startActivity(Intent(this, GameActivity::class.java))
         }
 
         // 커먼 버튼 ==> 누르면 보통 난이도로 게임 실행
