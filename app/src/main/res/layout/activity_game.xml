@@ -33,7 +33,7 @@
             android:id="@+id/tv_timer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="50dp"
+            android:layout_marginStart="85dp"
             android:text="걸린 시간:"
             android:textColor="#020202"
             android:textSize="30sp"

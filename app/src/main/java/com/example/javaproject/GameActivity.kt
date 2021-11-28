@@ -8,9 +8,7 @@ import kotlin.concurrent.timer
 
 class GameActivity : AppCompatActivity() {
     // 타이머 기능 구현
-    var time_ms : Long = 0
-    var time_sec : Long = 0
-    var time_min : Long = 0
+    var time : Long = 0
     lateinit var tv_timer : TextView
 
 
@@ -20,20 +18,11 @@ class GameActivity : AppCompatActivity() {
 
         tv_timer = findViewById(R.id.tv_timer)
 
-        //timer 기능 구현 (3초 딜레이 후 시작)
-        timer(period = 10, initialDelay=3000) {
-            time_ms += 1
+        //timer 기능 구현 (3초 딜레이 후 시작: parameter 에 initialDelay=3000 추가)
+        timer(period = 10) {
+            time += 1
             runOnUiThread {
-                if (time_ms > 99) {
-                    time_ms = 0
-                    time_sec += 1
-                }
-                if (time_sec > 59) {
-                    time_sec = 0
-                    time_min += 1
-                }
-                tv_timer.text = "걸린 시간: ${time_min}:${time_sec}:${time_ms}"
-
+                tv_timer.text = "TIME: ${(time/(100*60))%60}:${(time/100)%60}:${time%100}"
             }
         }
 
