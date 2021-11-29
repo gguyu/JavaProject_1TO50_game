@@ -1,5 +1,6 @@
 package com.example.javaproject
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -13,7 +14,6 @@ class GameActivity : AppCompatActivity() {
     var time : Long = 0
     lateinit var tv_timer : TextView
     lateinit var tv_next : TextView
-
     // 버튼 배열 선언
     val buttonList = ArrayList<Button>()
     // 타일 숫자 배열
@@ -23,11 +23,27 @@ class GameActivity : AppCompatActivity() {
     val numberList76To100 = ArrayList<Int>()
     // 다음 숫자
     var nextNumber = 0
+    // 그만하기, 다시하기 버튼
+    lateinit var stopButton : TextView
+    lateinit var retryButton : TextView
 
     // 실행
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
+
+        // 그만하기 버튼 ==> 게임 난이도 선택으로 이동
+        stopButton = findViewById(R.id.bt_home)
+        stopButton.setOnClickListener {
+            finish()
+        }
+
+        // 다시하기 버튼 ==> 같은 난이도 게임 재시작
+        retryButton = findViewById(R.id.bt_retry)
+        retryButton.setOnClickListener {
+            startActivity(Intent(this, GameActivity::class.java))
+            finish()
+        }
 
         // 버튼 배열 초기화
         setButtonList()
@@ -35,24 +51,51 @@ class GameActivity : AppCompatActivity() {
         setRandomNumber()
         // 초기 타일 설정
         setFirstTile()
-
+        // 상단 텍스트뷰
         tv_next = findViewById(R.id.tv_next)
-
         tv_timer = findViewById(R.id.tv_timer)
 
+        // 3초 딜레이 시간
+        var readyTime = 0
+        timer(period = 1000) {
+            readyTime += 1
+            runOnUiThread {
+                if (readyTime == 1) {
+                    // 3 표시
+                    tv_timer.text = "READY 3"
+                    tv_next.text = "Next: 1"
+                }else if (readyTime == 2) {
+                    // 2 표시
+                    tv_timer.text = "READY 2"
+                }else if (readyTime == 3) {
+                    // 1 표시
+                    tv_timer.text = "READY 1"
+                }else if (readyTime == 3) {
+                    // 아무표시 안함
+                    cancel()
+                }
+            }
+        }
+
         //timer 기능 구현 (3초 딜레이 후 시작: parameter 에 initialDelay=3000 추가)
+        var actState = 0
         timer(period = 10, initialDelay = 3000) {
-            var actState = 0
             if (actState == 0) {
                 button_action()
+                actState++
             }
+
             if (nextNumber == 26) {
                 cancel()
             }
             time += 1
             runOnUiThread {
                 tv_timer.text = "TIME: ${(time/(100*60))%60}:${(time/100)%60}:${time%100}"
-                tv_next.text = "Next: $nextNumber"
+                if (nextNumber < 26) {
+                    tv_next.text = "Next: $nextNumber"
+                }else {
+                    tv_next.text = "DONE!"
+                }
             }
         }
 
@@ -125,7 +168,6 @@ class GameActivity : AppCompatActivity() {
 
     }
 
-
     // 버튼 클릭 액션 설정
     private fun button_action() {
         for(i in 0..24) {
@@ -139,11 +181,6 @@ class GameActivity : AppCompatActivity() {
 
         }
     }
-
-
-
-
-
 
 
 }
