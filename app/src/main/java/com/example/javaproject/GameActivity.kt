@@ -21,17 +21,19 @@ class GameActivity : AppCompatActivity() {
     val numberList26To50 = ArrayList<Int>()
     val numberList51To75 = ArrayList<Int>()
     val numberList76To100 = ArrayList<Int>()
-    // 다음 숫자
+    // 다음 숫자, 끝나는 숫자
     var nextNumber = 0
+    var endNumber = 0
     // 그만하기, 다시하기 버튼
     lateinit var stopButton : TextView
     lateinit var retryButton : TextView
+    // 난이도 변수 (easy: 1 , common: 2, hard: 3)
+    var difficulty = 0
 
     // 실행
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
-
         // 그만하기 버튼 ==> 게임 난이도 선택으로 이동
         stopButton = findViewById(R.id.bt_home)
         stopButton.setOnClickListener {
@@ -41,12 +43,16 @@ class GameActivity : AppCompatActivity() {
         // 다시하기 버튼 ==> 같은 난이도 게임 재시작
         retryButton = findViewById(R.id.bt_retry)
         retryButton.setOnClickListener {
-            startActivity(Intent(this, GameActivity::class.java))
+            val intent = Intent(this@GameActivity, GameActivity::class.java)
+            intent.putExtra("difficulty", difficulty)
+            startActivity(intent)
             finish()
         }
 
         // 버튼 배열 초기화
         setButtonList()
+        // 난이도 설정
+        setDifficulty()
         // 랜덤 숫자 받기
         setRandomNumber()
         // 초기 타일 설정
@@ -85,13 +91,13 @@ class GameActivity : AppCompatActivity() {
                 actState++
             }
 
-            if (nextNumber == 26) {
+            if (nextNumber == endNumber) {
                 cancel()
             }
             time += 1
             runOnUiThread {
                 tv_timer.text = "TIME: ${(time/(100*60))%60}:${(time/100)%60}:${time%100}"
-                if (nextNumber < 26) {
+                if (nextNumber < endNumber) {
                     tv_next.text = "Next: $nextNumber"
                 }else {
                     tv_next.text = "DONE!"
@@ -135,6 +141,23 @@ class GameActivity : AppCompatActivity() {
 
     }
 
+    // 난이도 설정
+    private fun setDifficulty() {
+        // 난이도 변수 (easy: 1 , common: 2, hard: 3)
+        val difficultyInt = intent.extras?.get("difficulty").toString().toInt()
+        difficulty = difficultyInt
+
+        // 난이도 별 끝나는 숫자 설정
+        if (difficulty == 1) {
+            endNumber = 26
+        }else if (difficulty == 2) {
+            endNumber = 51
+        }else if (difficulty == 3) {
+            endNumber = 101
+        }
+
+    }
+
     // 버튼에 랜덤 숫자 부여 (1~25)
     // 파라미터로 난이도 받아서 if 문써서 난이도 별로 해주면 될듯
     private fun setRandomNumber() {
@@ -142,17 +165,103 @@ class GameActivity : AppCompatActivity() {
         var randInt = 0
         var redundantInt = ArrayList<Int>()  // 중복체크
         var i = 0
+        when(difficulty) {
+            3->{
+                while (i < 25) {
+                    randInt = random.nextInt(25)
 
-        while (i < 25) {
-            randInt = random.nextInt(25)
+                    if (!redundantInt.contains(randInt)) {
+                        redundantInt.add(randInt)
+                        numberList76To100.add(randInt + 76)
+                        i++
+                    }
+                }
+                i = 0
+                redundantInt.clear()
 
-            if (!redundantInt.contains(randInt)) {
-                redundantInt.add(randInt)
-                numberList1To25.add(randInt + 1)
-                i++
+                while (i < 25) {
+                    randInt = random.nextInt(25)
+
+                    if (!redundantInt.contains(randInt)) {
+                        redundantInt.add(randInt)
+                        numberList51To75.add(randInt + 51)
+                        i++
+                    }
+                }
+                i = 0
+                redundantInt.clear()
+
+                while (i < 25) {
+                    randInt = random.nextInt(25)
+
+                    if (!redundantInt.contains(randInt)) {
+                        redundantInt.add(randInt)
+                        numberList26To50.add(randInt + 26)
+                        i++
+                    }
+                }
+                i = 0
+                redundantInt.clear()
+
+                while (i < 25) {
+                    randInt = random.nextInt(25)
+
+                    if (!redundantInt.contains(randInt)) {
+                        redundantInt.add(randInt)
+                        numberList1To25.add(randInt + 1)
+                        i++
+                    }
+                }
+                i = 0
+                redundantInt.clear()
+
             }
+            2->{
+                while (i < 25) {
+                    randInt = random.nextInt(25)
 
+                    if (!redundantInt.contains(randInt)) {
+                        redundantInt.add(randInt)
+                        numberList26To50.add(randInt + 26)
+                        i++
+                    }
+                }
+                i = 0
+                redundantInt.clear()
+
+                while (i < 25) {
+                    randInt = random.nextInt(25)
+
+                    if (!redundantInt.contains(randInt)) {
+                        redundantInt.add(randInt)
+                        numberList1To25.add(randInt + 1)
+                        i++
+                    }
+                }
+                i = 0
+                redundantInt.clear()
+
+            }
+            1->{
+                while (i < 25) {
+                    randInt = random.nextInt(25)
+
+                    if (!redundantInt.contains(randInt)) {
+                        redundantInt.add(randInt)
+                        numberList1To25.add(randInt + 1)
+                        i++
+                    }
+                }
+                i = 0
+                redundantInt.clear()
+
+            }
+            else->{
+                difficulty = 2  // default를 보통 난이도로 설정
+                setRandomNumber()
+            }
         }
+
 
     }
 
@@ -170,17 +279,92 @@ class GameActivity : AppCompatActivity() {
 
     // 버튼 클릭 액션 설정
     private fun button_action() {
+        // 쉬움 + 보통 + 하드
         for(i in 0..24) {
             buttonList[i].setOnClickListener {
+
+                /*
                 if (nextNumber == numberList1To25[i]) {
+                    nextNumber ++
+                    if (difficulty == 1) { // 쉬움
+                        buttonList[i].text = ""
+                    }else { // 보통 or 하드
+                        buttonList[i].text = numberList26To50[i].toString()
+                    }
+
+                }
+                if (nextNumber == numberList26To50[i]) {
+                    nextNumber ++
+                    if (difficulty == 2) { // 보통
+                        buttonList[i].text = ""
+                    }else { // 하드
+                        buttonList[i].text = numberList51To75[i].toString()
+                    }
+
+                }
+                if (nextNumber == numberList51To75[i]) {
+                    nextNumber ++
+                    buttonList[i].text = numberList76To100[i].toString()
+                }
+                if (nextNumber == numberList76To100[i]) {
                     nextNumber ++
                     buttonList[i].text = ""
                 }
+                */
+
+                if (difficulty == 1) { // 쉬움모드
+                    if (nextNumber == numberList1To25[i]) {
+                        nextNumber ++
+                        buttonList[i].text = ""
+                    }
+                }else if (difficulty == 2) {
+                    if (nextNumber == numberList1To25[i]) {
+                        nextNumber ++
+                        buttonList[i].text = numberList26To50[i].toString()
+                    }
+                    if (nextNumber == numberList26To50[i]) {
+                        nextNumber ++
+                        buttonList[i].text = ""
+                    }
+                }else if (difficulty == 3) {
+                    if (nextNumber == numberList1To25[i]) {
+                        nextNumber ++
+                        buttonList[i].text = numberList26To50[i].toString()
+                    }
+                    if (nextNumber == numberList26To50[i]) {
+                        nextNumber ++
+                        buttonList[i].text = numberList51To75[i].toString()
+                    }
+                    if (nextNumber == numberList51To75[i]) {
+                        nextNumber ++
+                        buttonList[i].text = numberList76To100[i].toString()
+                    }
+                    if (nextNumber == numberList76To100[i]) {
+                        nextNumber ++
+                        buttonList[i].text = ""
+                    }
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
             }
-
         }
+
+
+
     }
+
 
 
 }
