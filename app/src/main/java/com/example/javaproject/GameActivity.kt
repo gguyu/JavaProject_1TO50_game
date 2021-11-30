@@ -1,6 +1,7 @@
 package com.example.javaproject
 
 import android.content.Intent
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -105,9 +106,7 @@ class GameActivity : AppCompatActivity() {
             }
         }
 
-        // 게임 난이도 선택 시 3초 후에 게임 시작
         // 게임 완료 시 중지 + 로컬 db 저장 (베스트 score 기록)
-        // + replay 버튼 or 홈 버튼 (replay 버튼 누르면 타이머 초기화?)
 
     }
 
@@ -283,41 +282,13 @@ class GameActivity : AppCompatActivity() {
         for(i in 0..24) {
             buttonList[i].setOnClickListener {
 
-                /*
-                if (nextNumber == numberList1To25[i]) {
-                    nextNumber ++
-                    if (difficulty == 1) { // 쉬움
-                        buttonList[i].text = ""
-                    }else { // 보통 or 하드
-                        buttonList[i].text = numberList26To50[i].toString()
-                    }
-
-                }
-                if (nextNumber == numberList26To50[i]) {
-                    nextNumber ++
-                    if (difficulty == 2) { // 보통
-                        buttonList[i].text = ""
-                    }else { // 하드
-                        buttonList[i].text = numberList51To75[i].toString()
-                    }
-
-                }
-                if (nextNumber == numberList51To75[i]) {
-                    nextNumber ++
-                    buttonList[i].text = numberList76To100[i].toString()
-                }
-                if (nextNumber == numberList76To100[i]) {
-                    nextNumber ++
-                    buttonList[i].text = ""
-                }
-                */
-
                 if (difficulty == 1) { // 쉬움모드
                     if (nextNumber == numberList1To25[i]) {
                         nextNumber ++
                         buttonList[i].text = ""
+                        buttonList[i].setBackgroundColor(Color.LTGRAY)
                     }
-                }else if (difficulty == 2) {
+                }else if (difficulty == 2) { // 보통모드
                     if (nextNumber == numberList1To25[i]) {
                         nextNumber ++
                         buttonList[i].text = numberList26To50[i].toString()
@@ -325,8 +296,9 @@ class GameActivity : AppCompatActivity() {
                     if (nextNumber == numberList26To50[i]) {
                         nextNumber ++
                         buttonList[i].text = ""
+                        buttonList[i].setBackgroundColor(Color.LTGRAY)
                     }
-                }else if (difficulty == 3) {
+                }else if (difficulty == 3) { // 하드모드
                     if (nextNumber == numberList1To25[i]) {
                         nextNumber ++
                         buttonList[i].text = numberList26To50[i].toString()
@@ -342,26 +314,13 @@ class GameActivity : AppCompatActivity() {
                     if (nextNumber == numberList76To100[i]) {
                         nextNumber ++
                         buttonList[i].text = ""
+                        buttonList[i].setBackgroundColor(Color.LTGRAY)
                     }
                 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
             }
+
         }
-
-
 
     }
 
