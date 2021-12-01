@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import com.example.javaproject.MyApplication.Companion.prefs
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.concurrent.timer
@@ -64,6 +65,26 @@ class GameActivity : AppCompatActivity() {
         // 상단 텍스트뷰
         tv_next = findViewById(R.id.tv_next)
         tv_timer = findViewById(R.id.tv_timer)
+        // 베스트 레코드 표시
+        tv_record = findViewById(R.id.tv_record)
+        tv_best = findViewById(R.id.tv_best)
+
+        var bestRecord : String? = ""
+        var record_time : Long = Long.MAX_VALUE
+
+        if (difficulty == 1) {
+            bestRecord = prefs.getString("easy", bestRecord)
+        }else if (difficulty == 2) {
+            bestRecord = prefs.getString("common", bestRecord)
+        }else if (difficulty == 3) {
+            bestRecord = prefs.getString("hard", bestRecord)
+        }
+        if (bestRecord == "") {
+            tv_record.text = "00:00:00"
+        }else {
+            record_time = bestRecord!!.toLong()
+            tv_record.text = "${(record_time/(100*60))%60}:${(record_time/100)%60}:${record_time%100}"
+        }
 
         // 3초 딜레이 시간
         var readyTime = 0
@@ -97,6 +118,19 @@ class GameActivity : AppCompatActivity() {
 
             if (nextNumber == endNumber) {
                 cancel()
+
+                if (time < record_time ) {
+                    tv_best.text = "Very Well! New Record!!!"
+                    tv_best.setTextColor(getColor(R.color.purple_200))
+
+                    if (difficulty == 1) {
+                        prefs.edit().putString("easy", time.toString()).commit()
+                    }else if (difficulty == 2) {
+                        prefs.edit().putString("common", time.toString()).commit()
+                    }else if (difficulty == 3) {
+                        prefs.edit().putString("hard", time.toString()).commit()
+                    }
+                }
             }
             time += 1
             runOnUiThread {
