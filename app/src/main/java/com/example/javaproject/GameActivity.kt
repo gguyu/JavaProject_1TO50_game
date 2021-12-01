@@ -15,6 +15,9 @@ class GameActivity : AppCompatActivity() {
     var time : Long = 0
     lateinit var tv_timer : TextView
     lateinit var tv_next : TextView
+    // best record 기능 구현
+    lateinit var tv_best : TextView
+    lateinit var tv_record : TextView
     // 버튼 배열 선언
     val buttonList = ArrayList<Button>()
     // 타일 숫자 배열
