@@ -8,6 +8,7 @@ import android.widget.Button
 class MainActivity : AppCompatActivity() {
     lateinit var startButton : Button
     lateinit var tipButton : Button
+    lateinit var scoreButton : Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,10 +24,13 @@ class MainActivity : AppCompatActivity() {
         tipButton= findViewById(R.id.tipButton)
         tipButton.setOnClickListener {
             startActivity(Intent(this, TipActivity::class.java))
-
         }
 
-
+        // 점수판 버튼 ==> 점수판 화면으로 이동
+        scoreButton = findViewById(R.id.scoreButton)
+        scoreButton.setOnClickListener {
+            startActivity(Intent(this, ScoreActivity::class.java))
+        }
 
 
     }
