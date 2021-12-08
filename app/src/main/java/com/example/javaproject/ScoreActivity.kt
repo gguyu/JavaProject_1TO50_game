@@ -30,9 +30,14 @@ class ScoreActivity : AppCompatActivity() {
         var commonTime : Long = 0
         var hardTime : Long = 0
 
+        // SharedPreferences 활용
         easyRecord = MyApplication.prefs.getString("easy", easyRecord)
         commonRecord = MyApplication.prefs.getString("common", commonRecord)
         hardRecord = MyApplication.prefs.getString("hard", hardRecord)
+
+        // 점수판
+        // 난이도 별로 최단 시간 보여줌
+        // 기록이 없으면 00:00:00 으로 보임
 
         // 쉬움 모드 점수
         if (easyRecord == "") {

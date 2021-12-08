@@ -19,6 +19,7 @@ class DifficultyActivity : AppCompatActivity() {
         // 이지 버튼 ==> 누르면 쉬움 난이도로 게임 실행
         easyButton = findViewById(R.id.easyButton)
         easyButton.setOnClickListener {
+            // GameActivity에 인자로 1 넘겨줌 (쉬움 난이도)
             val intent = Intent(this@DifficultyActivity, GameActivity::class.java)
             intent.putExtra("difficulty", 1)
             startActivity(intent)
@@ -28,6 +29,7 @@ class DifficultyActivity : AppCompatActivity() {
         // 커먼 버튼 ==> 누르면 보통 난이도로 게임 실행
         commonButton = findViewById(R.id.commonButton)
         commonButton.setOnClickListener {
+            // GameActivity에 인자로 2 넘겨줌 (보통 난이도)
             val intent = Intent(this@DifficultyActivity, GameActivity::class.java)
             intent.putExtra("difficulty", 2)
             startActivity(intent)
@@ -37,6 +39,7 @@ class DifficultyActivity : AppCompatActivity() {
         // 하드 버튼 ==> 누르면 보통 난이도로 게임 실행
         hardButton = findViewById(R.id.hardButton)
         hardButton.setOnClickListener {
+            // GameActivity에 인자로 3 넘겨줌 (하드 난이도)
             val intent = Intent(this@DifficultyActivity, GameActivity::class.java)
             intent.putExtra("difficulty", 3)
             startActivity(intent)

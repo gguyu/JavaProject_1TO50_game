@@ -119,6 +119,7 @@ class GameActivity : AppCompatActivity() {
             if (nextNumber == endNumber) {
                 cancel()
 
+                // best score 와 비교해서 난이도별 최단 시간만 저장
                 if (time < record_time ) {
                     tv_best.text = "Very Well! New Record!!!"
                     tv_best.setTextColor(getColor(R.color.purple_200))
@@ -143,7 +144,7 @@ class GameActivity : AppCompatActivity() {
             }
         }
 
-        // 게임 완료 시 중지 + 로컬 db 저장 (베스트 score 기록)
+        // 게임 완료 시 중지 + 로컬 db 저장 (각 난이도별 최단 시간만 기록)
 
     }
 
@@ -195,18 +196,19 @@ class GameActivity : AppCompatActivity() {
     }
 
     // 버튼에 랜덤 숫자 부여 (1~25)
-    // 파라미터로 난이도 받아서 if 문써서 난이도 별로 해주면 될듯
     private fun setRandomNumber() {
         val random = Random()
         var randInt = 0
-        var redundantInt = ArrayList<Int>()  // 중복체크
+        var redundantInt = ArrayList<Int>()  // 중복 체크 용도
         var i = 0
+        // 자바의 case 문 ==> 코틀린의 when 문
+        // 랜덤으로 뽑아올 때 0부터 뽑아오므로 원하는 숫자를 가져오기 위해 1, 26, 51, 76 더해서 저장
         when(difficulty) {
-            3->{
+            3->{ // 하드 난이도일 때, 랜덤 숫자 25개씩 4개 배열에 저장
                 while (i < 25) {
                     randInt = random.nextInt(25)
 
-                    if (!redundantInt.contains(randInt)) {
+                    if (!redundantInt.contains(randInt)) {  // 랜덤으로 숫자 뽑아올 때 중복 방지
                         redundantInt.add(randInt)
                         numberList76To100.add(randInt + 76)
                         i++
@@ -218,7 +220,7 @@ class GameActivity : AppCompatActivity() {
                 while (i < 25) {
                     randInt = random.nextInt(25)
 
-                    if (!redundantInt.contains(randInt)) {
+                    if (!redundantInt.contains(randInt)) {  // 랜덤으로 숫자 뽑아올 때 중복 방지
                         redundantInt.add(randInt)
                         numberList51To75.add(randInt + 51)
                         i++
@@ -230,7 +232,7 @@ class GameActivity : AppCompatActivity() {
                 while (i < 25) {
                     randInt = random.nextInt(25)
 
-                    if (!redundantInt.contains(randInt)) {
+                    if (!redundantInt.contains(randInt)) { // 랜덤으로 숫자 뽑아올 때 중복 방지
                         redundantInt.add(randInt)
                         numberList26To50.add(randInt + 26)
                         i++
@@ -242,7 +244,7 @@ class GameActivity : AppCompatActivity() {
                 while (i < 25) {
                     randInt = random.nextInt(25)
 
-                    if (!redundantInt.contains(randInt)) {
+                    if (!redundantInt.contains(randInt)) { // 랜덤으로 숫자 뽑아올 때 중복 방지
                         redundantInt.add(randInt)
                         numberList1To25.add(randInt + 1)
                         i++
@@ -252,11 +254,11 @@ class GameActivity : AppCompatActivity() {
                 redundantInt.clear()
 
             }
-            2->{
+            2->{ // 보통 난이도일 때 랜덤 숫자 25개씩 2개 배열에 저장
                 while (i < 25) {
                     randInt = random.nextInt(25)
 
-                    if (!redundantInt.contains(randInt)) {
+                    if (!redundantInt.contains(randInt)) { // 랜덤으로 숫자 뽑아올 때 중복 방지
                         redundantInt.add(randInt)
                         numberList26To50.add(randInt + 26)
                         i++
@@ -268,7 +270,7 @@ class GameActivity : AppCompatActivity() {
                 while (i < 25) {
                     randInt = random.nextInt(25)
 
-                    if (!redundantInt.contains(randInt)) {
+                    if (!redundantInt.contains(randInt)) { // 랜덤으로 숫자 뽑아올 때 중복 방지
                         redundantInt.add(randInt)
                         numberList1To25.add(randInt + 1)
                         i++
@@ -278,11 +280,11 @@ class GameActivity : AppCompatActivity() {
                 redundantInt.clear()
 
             }
-            1->{
+            1->{ // 쉬움 난이도일 때 랜덤 숫자 25개 배열에 저장
                 while (i < 25) {
                     randInt = random.nextInt(25)
 
-                    if (!redundantInt.contains(randInt)) {
+                    if (!redundantInt.contains(randInt)) { // 랜덤으로 숫자 뽑아올 때 중복 방지
                         redundantInt.add(randInt)
                         numberList1To25.add(randInt + 1)
                         i++
@@ -292,8 +294,9 @@ class GameActivity : AppCompatActivity() {
                 redundantInt.clear()
 
             }
-            else->{
+            else->{ // 혹시 모를 예외를 대비한 default 설정
                 difficulty = 2  // default를 보통 난이도로 설정
+                // 다시 랜덤 숫자 부여 (보통 난이도로)
                 setRandomNumber()
             }
         }
@@ -306,7 +309,7 @@ class GameActivity : AppCompatActivity() {
         // 다음숫자 바로 1로 초기화
         nextNumber = 1
 
-        // 랜덤하게 버튼 구성하기
+        // 랜덤하게 버튼 구성하기 (초기 타일이므로 1부터 25까지)
         for(i in 0..24) {
             buttonList[i].text = numberList1To25[i].toString()
         }
@@ -318,14 +321,14 @@ class GameActivity : AppCompatActivity() {
         // 쉬움 + 보통 + 하드
         for(i in 0..24) {
             buttonList[i].setOnClickListener {
-
-                if (difficulty == 1) { // 쉬움모드
+                // 각 난이도 별로 버튼을 눌렀을 때 다음 나와야할 숫자나 공백 설정
+                if (difficulty == 1) { // 쉬움 난이도
                     if (nextNumber == numberList1To25[i]) {
                         nextNumber ++
                         buttonList[i].text = ""
                         buttonList[i].setBackgroundColor(Color.LTGRAY)
                     }
-                }else if (difficulty == 2) { // 보통모드
+                }else if (difficulty == 2) { // 보통 난이도
                     if (nextNumber == numberList1To25[i]) {
                         nextNumber ++
                         buttonList[i].text = numberList26To50[i].toString()
@@ -335,7 +338,7 @@ class GameActivity : AppCompatActivity() {
                         buttonList[i].text = ""
                         buttonList[i].setBackgroundColor(Color.LTGRAY)
                     }
-                }else if (difficulty == 3) { // 하드모드
+                }else if (difficulty == 3) { // 하드 난이도
                     if (nextNumber == numberList1To25[i]) {
                         nextNumber ++
                         buttonList[i].text = numberList26To50[i].toString()
